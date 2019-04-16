@@ -79,7 +79,31 @@ services:
       networks:
         - net-redis
 
+  ### elasticsearch container #########################################
+
+  elasticsearch: # 容器的名称
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0  # 指定基于哪个镜像
+    environment:
+    - cluster.name=esCluster # 集群名字,没有就不管
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小
+    ports:
+    - 9200:9200    # 指定映射的端口
+    networks:
+    - net-es-kibana
+
+  ### kibana container #########################################
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.4.0
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+    ports:
+    - "5601:5601"
+    networks:
+    - net-es-kibana
+
 networks:
   net-php72:
   net-mysql:
   net-redis:
+  net-es-kibana:
