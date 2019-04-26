@@ -81,26 +81,67 @@ services:
 
   ### elasticsearch container #########################################
 
-  elasticsearch: # 容器的名称
+  elasticsearch: # 容器的名称 master
     image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0  # 指定基于哪个镜像
+    container_name: elasticsearch
+    restart: always
     environment:
-    - cluster.name=esCluster # 集群名字,没有就不管
-    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./work/components/elasticsearch/data:/usr/share/elasticsearch/data:rw
+      - ./work/components/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
+      - ./work/components/elasticsearch/log:/usr/share/elasticsearch/logs:rw
     ports:
-    - 9200:9200    # 指定映射的端口
+      - "9200:9200"    # 指定映射的端口
+      - "9300:9300"
     networks:
-    - net-es-kibana
+      - net-es-kibana
 
-  ### kibana container #########################################
+  ### elasticsearch2 container 创建es集群#########################################
+  # elasticsearch2:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
+  #   container_name: elasticsearch2
+  #   restart: always
+  #   environment:
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./work/components/elasticsearch2/data:/usr/share/elasticsearch/data:rw
+  #     - ./work/components/elasticsearch2/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
+  #     - ./work/components/elasticsearch2/log:/usr/share/elasticsearch/logs:rw
+  #   ports:
+  #   - "9201:9200"    # 指定映射的端口
+  #   - "9301:9300"
+  #   networks:
+  #     - net-es-kibana
+
+### kibana container #########################################
   kibana:
     image: docker.elastic.co/kibana/kibana:6.4.0
     environment:
       SERVER_NAME: kibana
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
     ports:
-    - "5601:5601"
+      - "5601:5601"
     networks:
-    - net-es-kibana
+      - net-es-kibana
+
+  ### elasticsearch-head plugin head #########################################
+  elasticsearch-head:
+    image: yanliangzhong/elasticsearch-head
+    container_name: es-head
+    restart: always
+    ports:
+      - "9100:9100"
+    networks:
+      - net-es-kibana
 
 networks:
   net-php72:

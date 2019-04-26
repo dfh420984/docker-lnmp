@@ -1,0 +1,16 @@
+# minimum_master_nodes need to be explicitly set when bound on a public IP
+# set to 1 to allow single node clusters
+# Details: https://github.com/elastic/elasticsearch/pull/17288
+# cluster.name: "es-cluster"
+# node.name: es-master
+# node.master: true
+# node.data: true
+# http.port: 9200
+# transport.tcp.port: 9300
+# discovery.zen.ping.unicast.hosts: elasticsearch
+# discovery.zen.minimum_master_nodes: 1
+# path.logs: /usr/share/elasticsearch/logs
+network.host: 0.0.0.0
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+discovery.zen.minimum_master_nodes: 1

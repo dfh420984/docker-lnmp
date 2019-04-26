@@ -1,0 +1,12 @@
+# minimum_master_nodes need to be explicitly set when bound on a public IP
+# set to 1 to allow single node clusters
+# Details: https://github.com/elastic/elasticsearch/pull/17288
+cluster.name: "es-cluster"
+node.name: node1
+node.master: false
+node.data: true
+network.host: 0.0.0.0
+http.port: 9201
+transport.tcp.port: 9301
+discovery.zen.ping.unicast.hosts: elasticsearch, elasticsearch2
+path.logs: /usr/share/elasticsearch/logs
