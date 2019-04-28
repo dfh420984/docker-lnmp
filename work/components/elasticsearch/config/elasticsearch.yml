@@ -7,9 +7,9 @@
 # node.data: true
 # http.port: 9200
 # transport.tcp.port: 9300
-# discovery.zen.ping.unicast.hosts: elasticsearch
 # discovery.zen.minimum_master_nodes: 1
-# path.logs: /usr/share/elasticsearch/logs
+#discovery.zen.ping.unicast.hosts: ["elasticsearch", "elasticsearch2"]
+#path.logs: "/usr/share/elasticsearch/logs"
 network.host: 0.0.0.0
 http.cors.enabled: true
 http.cors.allow-origin: "*"
