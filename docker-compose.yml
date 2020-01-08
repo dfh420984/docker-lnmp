@@ -9,7 +9,7 @@ services:
         - "${HTTP_PORT}:80"
         - "${HTTPS_PORT}:443"
       volumes:
-        - ./work/wwwroot:/etc/nginx/html/:rw
+        - /Users/smzdm/duanfuhao/smzdm_web:/etc/nginx/html/:rw
         - ./work/components/nginx/config/nginx.conf:/etc/nginx/nginx.conf:ro
         - ./work/components/nginx/config/conf.d:/etc/nginx/conf.d:ro
         - ./work/components/nginx/log:/var/log/nginx:rw
@@ -32,7 +32,7 @@ services:
       expose:
         - "9000"
       volumes:
-        - ./work/wwwroot:/etc/nginx/html:rw
+        - /Users/smzdm/duanfuhao/smzdm_web:/etc/nginx/html:rw
         - ./work/components/php72/config/php.ini:/usr/local/etc/php/php.ini:ro
         - ./work/components/php72/config/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:rw
         - ./work/components/php72/log:/var/log:rw
@@ -82,49 +82,30 @@ services:
   ### elasticsearch container #########################################
 
   elasticsearch: # 容器的名称 master
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0  # 指定基于哪个镜像
+    image: elasticsearch:7.5.1  # 指定基于哪个镜像
     container_name: elasticsearch
-    restart: always
     environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - cluster.initial_master_nodes=elasticsearch
+      - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小
     ulimits:
       memlock:
         soft: -1
         hard: -1
     volumes:
-      - ./work/components/elasticsearch/data:/usr/share/elasticsearch/data:rw
-      - ./work/components/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
-      - ./work/components/elasticsearch/log:/usr/share/elasticsearch/logs:rw
+      - ./work/components/elasticsearch/data:/usr/share/elasticsearch/data
+      - ./work/components/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - "9200:9200"    # 指定映射的端口
-      - "9300:9300"
     networks:
       - net-es-kibana
 
-  ### elasticsearch2 container 创建es集群#########################################
-  # elasticsearch2:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:6.4.0
-  #   container_name: elasticsearch2
-  #   restart: always
-  #   environment:
-  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-  #   ulimits:
-  #     memlock:
-  #       soft: -1
-  #       hard: -1
-  #   volumes:
-  #     - ./work/components/elasticsearch2/data:/usr/share/elasticsearch/data:rw
-  #     - ./work/components/elasticsearch2/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:rw
-  #     - ./work/components/elasticsearch2/log:/usr/share/elasticsearch/logs:rw
-  #   ports:
-  #   - "9201:9200"    # 指定映射的端口
-  #   - "9301:9300"
-  #   networks:
-  #     - net-es-kibana
 
 ### kibana container #########################################
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.4.0
+    image: kibana:7.5.1
     environment:
       SERVER_NAME: kibana
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
@@ -145,6 +126,10 @@ services:
 
 networks:
   net-php72:
+    driver: bridge
   net-mysql:
+    driver: bridge
   net-redis:
+    driver: bridge
   net-es-kibana:
+    driver: bridge
