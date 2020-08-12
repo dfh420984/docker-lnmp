@@ -1,0 +1,14 @@
+FROM golang:1.14
+# 由于所周知的原因，某些包会出现下载超时。这里在docker里也使用go module的代理服务
+ENV GO111MODULE=on
+ENV GOPROXY="https://goproxy.io,https://goproxy.cn,direct"
+# docker中的工作目录
+WORKDIR /golang/app
+#本地文件添加到镜像中
+ADD . .
+# 指定编译完成后的文件名，可以不设置使用默认的，最后一步要执行该文件名
+RUN go mod init app
+RUN go build -o main .
+EXPOSE 8010
+# 这里跟编译完的文件名一致
+ENTRYPOINT  ["./main"]

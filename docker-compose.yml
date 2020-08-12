@@ -50,6 +50,17 @@ services:
         - net-mysql
         - net-redis
 
+  ### GoLang container #########################################
+
+  golang:
+    build:
+      context: ./build/golang/app
+    ports:
+      - "8010:8010"
+    restart: always
+    networks:
+      - net-golang
+
   ### Mysql container #########################################
 
   mysql:
@@ -132,4 +143,6 @@ networks:
   net-redis:
     driver: bridge
   net-es-kibana:
+    driver: bridge
+  net-golang:
     driver: bridge
