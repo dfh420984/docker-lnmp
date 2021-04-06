@@ -15,13 +15,13 @@ services:
         - ./work/components/nginx/log:/var/log/nginx:rw
       restart: always
       networks:
-        - net-php72
+        - net-php
 
   ### PHP container #########################################
 
-  php72:
+  php:
       build:
-        context: ./build/php72
+        context: ./build/php
         args:
           TIME_ZONE: ${GLOBAL_TIME_ZONE}
           CHANGE_SOURCE: ${GLOBAL_CHANGE_SOURCE}
@@ -33,12 +33,12 @@ services:
         - "9000"
       volumes:
         - /Users/smzdm/duanfuhao/smzdm_web:/etc/nginx/html:rw
-        - ./work/components/php72/config/php.ini:/usr/local/etc/php/php.ini:ro
-        - ./work/components/php72/config/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:rw
-        - ./work/components/php72/log:/var/log:rw
-        - ./work/components/php72/start.sh:/home/start.sh:rw
-        - ./work/components/php72/backup:/backup:rw
-        - ./work/components/php72/cron.d:/etc/cron.d:rw
+        - ./work/components/php/config/php.ini:/usr/local/etc/php/php.ini:ro
+        - ./work/components/php/config/php-fpm.conf:/usr/local/etc/php-fpm.d/www.conf:rw
+        - ./work/components/php/log:/var/log:rw
+        - ./work/components/php/start.sh:/home/start.sh:rw
+        - ./work/components/php/backup:/backup:rw
+        - ./work/components/php/cron.d:/etc/cron.d:rw
       restart: always
       links:
         - mysql
@@ -46,7 +46,7 @@ services:
         - mysql:mysql_alias
         - redis:redis_alias
       networks:
-        - net-php72
+        - net-php
         - net-mysql
         - net-redis
 
@@ -136,7 +136,7 @@ services:
       - net-es-kibana
 
 networks:
-  net-php72:
+  net-php:
     driver: bridge
   net-mysql:
     driver: bridge
